@@ -1,0 +1,31 @@
+{% comment %} Pattern:
+
+problemName: ...
+problemNumber: ...    
+problemDescription/Log: ...
+problemSolution: ... 
+problemSolutionLink: 
+{% endcomment %}
+
+
+problemName: not something we can merge
+problemNumber: 0    
+problemDescription/Log: not something we can merge
+problemSolution: 
+    As shown in How does "not something we can merge" arise?, this error can arise from a typo in the branch name because you are trying to pull a branch that doesn't exist.
+
+    If that is not the problem (as in my case), it is likely that you don't have a local copy of the branch that you want to merge. Git requires local knowledge of both branches in order to merge those branches. You can resolve this by checking out the branch to merge and then going back to the branch you want to merge into.
+
+    git checkout branch-name
+    git checkout master
+    git merge branch-name
+    This should work, but if you receive an error saying
+
+    error: pathspec 'remote-name/branch-name' did not match any file(s) known to git.
+    you need to fetch the remote (probably, but not necessarily, "origin") before checking out the branch:
+
+    git fetch remote-name
+problemSolutionLink: https://stackoverflow.com/questions/16862933/how-to-resolve-gits-not-something-we-can-merge-error
+
+
+
