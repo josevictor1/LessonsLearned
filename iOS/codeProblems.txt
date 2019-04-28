@@ -57,3 +57,36 @@ problemSolution:
     There are hundreds more e.g. AirplaneMode, MobileEquipmentIdentifier, etc.
     MobileGestalt maintains a table of OSType selector codes. for example c:890 in the message: libMobileGestalt MobileGestalt.c:890: MGIsDeviceOneOfType is not supported on this platform. In this case MGIsDeviceOneOfType is a method of the MobileGestalt library.
     Instead of checking the simulator version there is a separate selector for directly querying the capabilities of the simulator. The messages we are seeing indicate incompatibilities between simulator versions and Xcode versions.
+
+problemName: Show URLs image in swift
+problemNumber: 1
+problemDescription/Log: show image in swift
+problemSolution: 
+
+(Swift 4 update) To answer the original question directly, here's the swift equivalent of the posted Objective-C snippet.
+
+let url = URL(string: image.url)
+let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
+imageView.image = UIImage(data: data!)
+DISCLAIMER:
+
+It's important to note that the Data(contentsOf:) method will download the contents of the url synchronously in the same thread the code is being executed, so do not invoke this in the main thread of your application.
+
+An easy way to make the same code run asynchronously, not blocking the UI, is by using GCD:
+
+let url = URL(string: image.url)
+
+DispatchQueue.global().async {
+    let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
+    DispatchQueue.main.async {
+        imageView.image = UIImage(data: data!)
+    }
+}
+That said, in real life applications, if you want to have the best User Experience and avoid multiple downloads of the same image, you may want to also have them not only downloaded, but cached. There's already quite a few libraries that does that very seamless and they are all really easy to use. I personally recommend Kingfisher:
+
+import Kingfisher
+
+let url = URL(string: "url_of_your_image")
+// this downloads the image asynchronously if it's not cached yet
+imageView.kf.setImage(with: url) 
+And that's it
